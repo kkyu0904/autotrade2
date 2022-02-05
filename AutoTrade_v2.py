@@ -2,8 +2,8 @@ import time
 import pyupbit
 import datetime
 
-access = "s68kyjRJeEeiu4XKR8TasYnfGYqBeoYsULoUxnJW"
-secret = "JDg26BlqoxwxPL6hWVgZmEIkGx33ZiZaGOlYaAzM"
+access = ""
+secret = ""
 
 coin_list = ["KRW-ETH", "KRW-BTC", "KRW-SAND"]
  
