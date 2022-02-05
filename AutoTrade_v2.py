@@ -2,10 +2,10 @@ import time
 import pyupbit
 import datetime
 
-access = ""
-secret = ""
+access = "s68kyjRJeEeiu4XKR8TasYnfGYqBeoYsULoUxnJW"
+secret = "JDg26BlqoxwxPL6hWVgZmEIkGx33ZiZaGOlYaAzM"
 
-coin_list = ["KRW-ATOM", "KRW-DOT"]
+coin_list = ["KRW-ETH", "KRW-BTC", "KRW-SAND"]
  
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
@@ -38,16 +38,16 @@ def total_seed():
     seed = get_balance("KRW")
 
     for k in coin_list:
-        seed = seed + (get_balance(k[1:]) * get_current_price(k))
+        seed = seed + (get_balance(k[4:]) * get_current_price(k))
 
     return seed
 
 def holding_ratio(ticker):
-    holding_amount = get_balance(ticker[1:]) * get_current_price(ticker)
+    holding_amount = get_balance(ticker[4:]) * get_current_price(ticker)
     total_amount = get_balance("KRW")
 
     for k in coin_list:
-        total_amount = total_amount + (get_balance(k[1:]) * get_current_price(k))
+        total_amount = total_amount + (get_balance(k[4:]) * get_current_price(k))
     
     ratio = holding_amount / total_amount
 
@@ -58,11 +58,11 @@ def buy_coin(ticker):
     target_price = get_target_price(ticker, 0.2)
     current_price = get_current_price(ticker)
     ratio = holding_ratio(ticker)
-    max_ratio = 0.7
+    max_ratio = 0.5
 
-    if ((ratio + 0.005 < max_ratio) and (target_price < current_price)):
+    if ((ratio + 0.05 < max_ratio) and (target_price < current_price)):
         """가용 시드 = 최대 쓸 수 있는 돈 - 지금 그 종목에 들어가 있는 돈"""
-        available_seed = (total_seed() * max_ratio) - (get_balance(ticker[1:]) * get_current_price(ticker))
+        available_seed = (total_seed() * max_ratio) - (get_balance(ticker[4:]) * get_current_price(ticker))
         """ krw = 현재 현금 잔고"""
         krw = get_balance("KRW")
         if krw > 5000 :
@@ -73,13 +73,13 @@ def stop_loss(ticker):
     target_price = get_target_price(ticker, 0.2)
     current_price = get_current_price(ticker)
     
-    if ((current_price < target_price*0.95) and ((get_balance(ticker[1:]) * get_current_price(ticker)) > 5000)):
-        upbit.sell_market_order(ticker, get_balance(ticker[1:])*0.9995)
+    if ((current_price < target_price*0.97) and ((get_balance(ticker[4:]) * get_current_price(ticker)) > 5000)):
+        upbit.sell_market_order(ticker, get_balance(ticker[4:])*0.9995)
 
 def sell_coin(ticker):
     """매도"""
-    if (get_balance(ticker[1:]) * get_current_price(ticker)) > 5000:
-        upbit.sell_market_order(ticker, get_balance(ticker[1:])*0.9995)
+    if (get_balance(ticker[4:]) * get_current_price(ticker)) > 5000:
+        upbit.sell_market_order(ticker, get_balance(ticker[4:])*0.9995)
 
 # 로그인
 upbit = pyupbit.Upbit(access, secret)
@@ -95,8 +95,8 @@ while True:
         if start_time < now < end_time - datetime.timedelta(seconds=30):
             for ticker in coin_list:
                 buy_coin(ticker)
-                stop_loss(ticker)          
-
+                stop_loss(ticker)
+                
 
         else:
             for ticker in coin_list:
