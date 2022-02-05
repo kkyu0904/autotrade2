@@ -5,7 +5,7 @@ import datetime
 access = ""
 secret = ""
 
-coin_list = ["KRW-ETH", "KRW-BTC"]
+coin_list = ["KRW-ATOM", "KRW-DOT"]
  
 def get_target_price(ticker, k):
     """변동성 돌파 전략으로 매수 목표가 조회"""
